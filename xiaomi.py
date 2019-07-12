@@ -1,7 +1,7 @@
 # python3
 """Library for operating on Xiaomi smart home devices data."""
 
-import ble
+from xiaomi_ble import ble
 
 _HANDLE_SENSOR_DATA = 0x0010
 _HANDLE_BATTERY_LEVEL = 0x0018
