@@ -1,16 +1,21 @@
 # python3
 """Library for operating on Xiaomi smart home devices data."""
 
+import re
 from xiaomi_ble import ble
 
 _HANDLE_SENSOR_DATA = 0x0010
 _HANDLE_BATTERY_LEVEL = 0x0018
+DATA_RE = re.compile(r'T=([\d.-]+)\sH=([\d.-]+).*')
 
 
-def _temp_sensor_parse_data(data: str) -> (float, float):
+def _temp_sensor_parse_data(data: bytes) -> (float, float):
     """Extracts information from the data returned by the sensor."""
-    temperature = float(data[2:6])
-    humidity = float(data[9:13])
+    parsed_data = DATA_RE.match(data.decode('utf-8'))
+    if not parsed_data or parsed_data.lastindex != 2:
+        raise Exception('Cannot parse data: %s' % data)
+    temperature = float(parsed_data.group(1))
+    humidity = float(parsed_data.group(2))
     return temperature, humidity
 
 
